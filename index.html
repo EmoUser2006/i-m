@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Волков Захар | Самосайт</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050507;
+            --card-bg: rgba(15, 15, 18, 0.8);
+            --border: rgba(255, 255, 255, 0.06);
+            --text-main: #e4e4e7;
+            --text-muted: #71717a;
+            --accent-purple: #a855f7;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Фоновый шум / сетка для атмосферы */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
+                              radial-gradient(circle at 0% 100%, rgba(239, 68, 68, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Шапка */
+        .hero {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 40px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .hero .quote {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            display: inline-block;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background-color: var(--accent-purple);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Карточки */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(168, 85, 247, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-purple);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: "//";
+            color: var(--text-muted);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* Блок с ошибкой (координаты) */
+        .error-block {
+            background: rgba(239, 68, 68, 0.03);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .error-block .label {
+            color: var(--accent-red);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .error-block .coords {
+            color: #fca5a5;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .error-block .coords:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* Блок "Чего нет" */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .inventory-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            position: relative;
+        }
+
+        .inventory-item::after {
+            content: "NULL";
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            font-size: 0.6rem;
+            color: var(--accent-red);
+            opacity: 0.6;
+        }
+
+        /* Скиллы */
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .skill-tag {
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            color: #d8b4fe;
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .skill-tag:hover {
+            background: rgba(168, 85, 247, 0.15);
+            transform: scale(1.05);
+        }
+
+        .skill-tag.special {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+
+        /* Контакты */
+        .contacts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .contact-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(168, 85, 247, 0.3);
+            transform: translateX(4px);
+        }
+
+        .contact-link .name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .contact-link .value {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .contact-link .arrow {
+            color: var(--accent-purple);
+            transition: transform 0.2s;
+        }
+
+        .contact-link:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        /* Адаптив */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.8rem; }
+            .inventory-grid { grid-template-columns: repeat(2, 1fr); }
+            .contact-link { flex-direction: column; align-items: flex-start; gap: 8px; }
+        }
+	.hero {
+    display: flex;
+    flex-direction: column;  /* вертикально */
+    align-items: center;     /* по центру по горизонтали */
+    text-align: center;
+    gap: 20px;
+    padding: 60px 24px;
+}
+
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+    </style>
+</head>
+<body>
+
+<header>
+<div class="hero" "avatar">
+<img class="avatar" src="WIN_20261023_19_33_36_Pro.jpg" alt="Photo">
+</div>
+<div class="container">
+    <!-- Шапка -->
+    <header class="hero">
+        <h1>Волков Захар Андреевич</h1>
+        <p class="quote">
+            > Я ничем не занимаюсь, люблю вайбкодинг, нравится компьютер, больше мне ничего не нравится, оно мне не надо.
+        </p>
+    </header>
+
+    <!-- О себе -->
+    <section class="card">
+        <div class="card-title">Что я из себя представляю</div>
+        <p>Я проживаю в общежитии, обычно я лежу (или сижу). Мне там очень скучно, грустно и одиноко.</p>
+    </section>
+
+    <!-- Ошибка / Координаты -->
+    <section class="card">
+        <div class="card-title">Локация</div>
+        <div class="error-block">
+            <span class="label">[ SYSTEM ERROR ] Моя главная ошибка находится по адресу:</span>
+            <a href="https://yandex.ru/maps/?pt=61.664909,50.814091&z=15&l=map" target="_blank" class="coords">
+                61.664909, 50.814091
+            </a>
+        </div>
+    </section>
+
+    <!-- Инвентарь -->
+    <section class="card">
+        <div class="card-title">Инвентарь (Чего у меня нет)</div>
+        <p>Статус пустых слотов:</p>
+        <div class="inventory-grid">
+            <div class="inventory-item">Собственного жилья</div>
+            <div class="inventory-item">Машины</div>
+            <div class="inventory-item">Прав на машину</div>
+            <div class="inventory-item">Денег</div>
+            <div class="inventory-item">Друзей</div>
+            <div class="inventory-item">Подруг</div>
+            <div class="inventory-item">Парня</div>
+        </div>
+    </section>
+
+    <!-- Скиллы -->
+    <section class="card">
+        <div class="card-title">Я очень хорошо разбираюсь в</div>
+        <div class="skills-list">
+            <span class="skill-tag">HTML</span>
+            <span class="skill-tag">CSS</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag special">Жизнь</span>
+            <span class="skill-tag special">Во всем крч</span>
+        </div>
+    </section>
+
+    <!-- Контакты -->
+    <section class="card">
+        <div class="card-title">Мои контакты</div>
+        <div class="contacts-list">
+            <a href="mailto:EmoUser2006@gmail.com" class="contact-link">
+                <div>
+                    <div class="name">Email</div>
+                    <div class="value">EmoUser2006@gmail.com</div>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://t.me/EmoUser2006" target="_blank" class="contact-link">
+                <div>
+                    <div class="name">ZapretGram</div>
+                    <div class="value">@EmoUser2006</div>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://github.com/EmoUser2006" target="_blank" class="contact-link">
+                <div>
+                    <div class="name">GitHub</div>
+                    <div class="value">имею</div>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>
